@@ -11,7 +11,17 @@ dependencies = [
 test = [
     "pytest>=8",
     "hypothesis>=6.100",
+    "mypy>=1.10",
 ]
+
+[tool.mypy]
+python_version = "3.12"
+strict_optional = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = ["ortools.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

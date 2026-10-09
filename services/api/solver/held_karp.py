@@ -38,7 +38,7 @@ def solve_held_karp(problem: Problem) -> list[int]:
             if mask == full:
                 best[mask][j] = 0 if terminal is None else w(j, terminal)
                 continue
-            best_cost = None
+            best_cost: int | None = None
             best_u = -1
             for b in range(k):
                 if mask >> b & 1:
@@ -47,6 +47,7 @@ def solve_held_karp(problem: Problem) -> list[int]:
                 cost = w(j, u) + best[mask | 1 << b][u]
                 if best_cost is None or cost < best_cost:
                     best_cost, best_u = cost, u
+            assert best_cost is not None  # mask != full, so some stop is unvisited
             best[mask][j] = best_cost
             nxt[mask][j] = best_u
 

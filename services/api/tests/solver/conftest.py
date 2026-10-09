@@ -23,6 +23,7 @@ def brute_force(problem: Problem) -> list[int]:
         cost = problem.costs(order)
         if best_cost is None or cost < best_cost:
             best_order, best_cost = order, cost
+    assert best_order is not None  # permutations() always yields at least ()
     return best_order
 
 
