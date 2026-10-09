@@ -29,7 +29,7 @@ Everyday drivers (errands, tourists, salespeople). Global. Public launch on iOS,
    - Toll states are distinct: "No tolls" (route has no toll roads); "Tolls on route, price unavailable" (Google flags tolls without a price; the total excludes them and says so); a price.
 8. **Drag to reorder** — user can drag stops; time, distance and fuel recompute from the cached matrix (no API call). The map switches to straight dashed segments between pins, and toll shows "—" with a **Refresh route** button. Refresh makes one `computeRoutes` call for the custom order (polyline + toll). The matrix is never re-requested.
    - Constraints stay pinned: start, the locked first stop and the fixed end / return-to-start can't be dragged; only middle stops move.
-   - Refresh has its own daily cap per install ID (e.g. 20/day), separate from the Optimize limit. Refreshing an order already fetched reuses the cached result (no call).
+   - Refresh has its own daily cap of **20 refreshes per install ID**, separate from the Optimize limit. Refreshing an order already fetched reuses the cached result (no call).
    - Recompute uses the weather-adjusted durations (see Data flow, step 8).
 9. **Weather warning** — fetch the forecast at each stop for its estimated arrival hour (two-pass, see Data flow). Show a banner if rain/snow/fog/extreme temperature. Leg A→B gets the **worst (max) multiplier of A and B**; multipliers never compound. Configurable, documented, estimate only.
 10. **Navigate** — hand off to the Google Maps app via a Maps URL (`dir_action=navigate`). Maps URLs allow max 9 waypoints in the app and only 3 in mobile browsers, so routes are split into legs; app shows "Navigate leg 1 of 2" and a "Next leg" button.
@@ -87,12 +87,12 @@ Matrix is billed **per element** (N×N). Traffic-aware matrix is the more expens
 - 6 points (start + 5 stops) = 36 elements → many hundreds of trips free
 - 15 points (max) = 225 elements → only tens of trips free
 
-Each Optimize also makes ≤ 2 `computeRoutes` calls; each Refresh route makes 1 (separately capped per install ID per day; repeat refreshes of the same order are cached). The two-pass weather lookup adds weather calls only, never a second matrix call.
+Each Optimize also makes ≤ 2 `computeRoutes` calls; each Refresh route makes 1 (separately capped at 20 per install ID per day; repeat refreshes of the same order are cached). The two-pass weather lookup adds weather calls only, never a second matrix call.
 
 **Rules:**
 - Set a hard daily quota on every Maps API in Google Cloud Console + a billing alert at $10.
 - Abuse protection: Firebase App Check on iOS, Android and web; unattested calls are rejected.
-- Backend rate limit: **20 optimizations per device (install ID) per day**, plus a per-IP daily cap. Re-optimize counts as an optimization.
+- Backend rate limit: **20 optimizations per device (install ID) per day**, plus a cap of **100 optimizations per IP per day**. Re-optimize counts as an optimization.
 - Cache geocoding/place lookups for the session; never re-request the matrix for drag-to-reorder.
 - Verify exact SKU tiers (traffic-aware matrix, toll fields) on Google's pricing page before launch.
 
