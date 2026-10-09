@@ -92,7 +92,7 @@ Each Optimize also makes ≤ 2 `computeRoutes` calls; each Refresh route makes 1
 **Rules:**
 - Set a hard daily quota on every Maps API in Google Cloud Console + a billing alert at $10.
 - Abuse protection: Firebase App Check on iOS, Android and web; unattested calls are rejected.
-- Backend rate limit: N optimizations per install ID per day, plus a per-IP daily cap. Re-optimize counts as an optimization.
+- Backend rate limit: **20 optimizations per device (install ID) per day**, plus a per-IP daily cap. Re-optimize counts as an optimization.
 - Cache geocoding/place lookups for the session; never re-request the matrix for drag-to-reorder.
 - Verify exact SKU tiers (traffic-aware matrix, toll fields) on Google's pricing page before launch.
 
